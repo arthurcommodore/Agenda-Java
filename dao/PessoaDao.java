@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 import model.Pessoa;
-import model.Telefone;
 
 public class PessoaDao {
 
@@ -23,34 +22,45 @@ public class PessoaDao {
             ps.setString(1, pessoa.getNome());
             ps.executeUpdate(); 
 
-            pessoa.setId(getId(pessoa.getNome()));
-            ps = con.prepareStatement("INSERT INTO Telefone(TEL_NUMERO, PES_ID) VALUES(?, ?)");
-            for(Telefone telefone : pessoa.getTelefones()) {
-                ps.setInt(1, telefone.getNumero());
-                ps.setInt(2, pessoa.getId());
-            }
-            ps.executeUpdate();
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setId(Pessoa pessoa) {
+        try {
+            Statement stmt = con.createStatement();
+            String SQL = "SELECT PES_ID, PES_NOME FROM Pessoa "
+                        + "WHERE PES_NOME = " + "'" + pessoa.getNome() + "'";
+            ResultSet rs = stmt.executeQuery(SQL);
+            rs.next();
+            pessoa.setId(rs.getInt("PES_ID"));
 
         }catch(SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public Integer getId(String nome) {
+    public List<Pessoa> getAll() {
         try {
             Statement stmt = con.createStatement();
-            String SQL = "SELECT PES.PES_ID, PES.PES_NOME "
-                            + "FROM Pessoa AS PES "
-                            + "WHERE PES.PES_NOME = " + "'" + nome + "'"; 
+            String SQL = "SELECT PES.PES_ID, PES_NOME " 
+                        + "FROM Pessoa AS PES ";
 
             ResultSet rs = stmt.executeQuery(SQL);
+            List<Pessoa> pessoas = new ArrayList<>();
+
             while(rs.next()) {
-                return rs.getInt("PES_ID");
+                Pessoa pessoa = new Pessoa();
+                pessoa.setId(rs.getInt("PES_ID"));
+                pessoa.setNome(rs.getString("PES_NOME"));
+                
+                pessoas.add(pessoa);
             }
+            return pessoas;
         }catch(SQLException e) {
             e.printStackTrace();
         }
         return null;
-
     }
 }

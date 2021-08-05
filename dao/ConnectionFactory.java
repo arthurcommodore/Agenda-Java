@@ -12,7 +12,7 @@ public class ConnectionFactory {
     public static Connection getConnection() {
         try {
             Class.forName("org.postgresql.Driver");
-            return DriverManager.getConnection("jdbc:postgresql://localhost:5432/agenda", "postgres", "123");
+            return DriverManager.getConnection("jdbc:postgresql://localhost:5432/agenda", "postgres", "0000");
         }catch(Exception e) {
             throw new RuntimeException("Erro de conexão", e);
         }

@@ -7,7 +7,7 @@ public class Telefone {
     public Telefone(int numero) {
         this.numero = numero;
     }
-
+     
     public Telefone() {
 
     }

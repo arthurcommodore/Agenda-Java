@@ -20,6 +20,12 @@ public class Main {
                 case 1:
                     Main.insertPessoa();
                     break;
+                case 4:
+                    PessoaDao pessoaDao = new PessoaDao();
+                    List<Pessoa> pessoas = pessoaDao.getAll();
+                    for (Pessoa pessoa : pessoas) {
+                       System.out.println(pessoa.getNome()); 
+                    }
             }
 
         }while(option != 5);
@@ -37,28 +43,32 @@ public class Main {
     public static void insertPessoa() {
         PessoaDao pessoaDao = new PessoaDao();      
         Pessoa pessoa = new Pessoa();
-        List<Telefone> telefones = new ArrayList<>();
+        // List<Telefone> telefones = new ArrayList<>();
 
         System.out.println("Digite o nome: ");
         pessoa.setNome(sc.next());
-        do {
-            System.out.println("Número de telefone ou celular: ");
-            telefones.add(new Telefone(sc.nextInt()) );
-
-            System.out.println("Deseja cadastrar mais um número ? (s/n)");
-        }while((sc.next().toLowerCase() == "s")  ? true :  false);
-
-        pessoa.setTelefones(telefones);
+        
         pessoaDao.create(pessoa);
-
-        Contato contato = new Contato(pessoa);
-        Main.insertContato(contato);
+        insertTelefone(pessoa, pessoaDao);
+        insertContato(pessoa);
     }
 
-    public static void insertContato(Contato contato) {
+    public static void insertTelefone(Pessoa pessoa, PessoaDao pessoaDao) {
+        TelefoneDao telefoneDao = new TelefoneDao();
+        Telefone telefone = new Telefone();
+
+        System.out.println("Digite o número");
+        telefone.setNumero(sc.nextInt());
+        pessoaDao.setId(pessoa); 
+
+        telefoneDao.create(telefone, pessoa);
+    }
+
+    public static void insertContato(Pessoa pessoa) {
         ContatoDao contatoDao = new ContatoDao();
+        Contato contato = new Contato();
+        contato.setPessoa(pessoa);
         contatoDao.create(contato);
-        Main.insertAgenda(contato);
     }
 
     public static void insertAgenda(Contato contato) {
